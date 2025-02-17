@@ -1,4 +1,9 @@
-def division(a: int, b: int) -> str:
+import random
+
+def python_division(a: int, b: int) -> tuple:
+    return (int(a / b), a % b)
+
+def division(a: int, b: int) -> tuple:
     a_str = str(a) # n
     b_str = str(b) # m
     c = ""
@@ -13,12 +18,22 @@ def division(a: int, b: int) -> str:
         
         c += str(mx)
         r = str(int(r) - mx*b)
-    
-    if not c:
-        c = "0"
-    return (int(c.lstrip('0')), int(r))
+    c = c.lstrip('0')
+    return (0 if not c else int(c), int(r))
 
-print(division(123456789, 12345))
+def test_division():
+    for _ in range(100):
+        a = random.randint(1, 10**9)
+        b = random.randint(1, 10**9)
+        
+        res11, res12 = division(a, b)
+        res21, res22 = python_division(a, b)
+        
+        assert res11 == res21 and res12 == res22, f"Test failed for a={a}, b={b}: expected {res21}.{res22}, got {res11}.{res12}"
+    
+    print("All tests passed!")
+
+test_division()
 
 # O(m*n) операций тк у нас два цикла (первый на n итераций, второй на m итераций(максимально))
 # в худшем случае мы будем для каждой цифры делителя искать от 1 до m чтобы поделить. O(m*n)
