@@ -16,7 +16,7 @@ def division(a: int, b: int) -> str:
     
     if not c:
         c = "0"
-    return f"{c.lstrip('0')} and {r}"
+    return (int(c.lstrip('0')), int(r))
 
 print(division(123456789, 12345))
 
