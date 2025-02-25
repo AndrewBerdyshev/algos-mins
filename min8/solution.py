@@ -32,7 +32,6 @@ def set_part(a, begin, end, res):
     l = 0
     for i in range(begin[0], end[0]+1):
         for j in range(begin[1], end[1]+1):
-            #print(i, j, k, l, begin, end, a, res)
             res[i][j] = a[k][l]
             l+=1
         l=0
@@ -62,10 +61,6 @@ def recursive_multiply(a, b): # 2
     set_part(sum(multiply(C, F), multiply(D, H)), [n, n], [m, m], res)
     return res
 
-# print(recursive_multiply(
-# [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]],
-# [[17, 18, 19, 20], [21, 22, 23, 24], [25, 26, 27, 28], [29, 30, 31, 32]]))
-
 def neg(a):
     res = get_zero_matrixnn(len(a))
     for i in range(len(a)):
@@ -73,7 +68,7 @@ def neg(a):
             res[i][j] = -a[i][j]
     return res
 
-def strassen(a, b):
+def strassen(a, b): # 3
     ln = len(a)
     if ln == 2:
         return multiply(a, b)
