@@ -28,4 +28,5 @@ for algo in algos_temp:
         if f"{n}x{n}" not in benchmarks:
             benchmarks.append(f"{n}x{n}")
     results.append(temp)
+    
 format_table.format_table(benchmarks, algos, results)
