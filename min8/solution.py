@@ -1,42 +1,16 @@
+import numpy as np
+
 def get_zero_matrixnn(n):
     return  [[0 for _ in range(n)] for __ in range(n)]
 
-def multiply(a, b): # 1
-    ln = len(a)
-    res = get_zero_matrixnn(ln)
-    for i in range(ln):
-        for j in range(ln):
-            for k in range(ln):
-                res[i][j] += a[i][k] * b[k][j]
-    return res
+def multiply(a, b):
+    return np.matmul(a, b)
 
-def sum(a, b):
-    ln = len(a)
-    res = get_zero_matrixnn(ln)
-    for i in range(ln):
-        for j in range(ln):
-            res[i][j] = a[i][j] + b[i][j]
-    return res
+def get_part(matrix, start, end):
+    return matrix[start[0]:end[0]+1, start[1]:end[1]+1]
 
-def get_part(a, begin, end):
-    res = []
-    for i in range(begin[0], end[0]+1):
-        temp = []
-        for j in range(begin[1], end[1]+1):
-            temp.append(a[i][j])
-        res.append(temp)
-    return res
-
-def set_part(a, begin, end, res):
-    k = 0
-    l = 0
-    for i in range(begin[0], end[0]+1):
-        for j in range(begin[1], end[1]+1):
-            res[i][j] = a[k][l]
-            l+=1
-        l=0
-        k+=1
-    k=0
+def set_part(part, start, end, matrix):
+    matrix[start[0]:end[0]+1, start[1]:end[1]+1] = part
 
 def recursive_multiply(a, b): # 2
     ln = len(a)
@@ -54,18 +28,11 @@ def recursive_multiply(a, b): # 2
     G = get_part(b, [n, 0], [m, n-1])
     H = get_part(b, [n, n], [m, m])
 
-    res = get_zero_matrixnn(ln)
-    set_part(sum(multiply(A, E), multiply(B, G)), [0, 0], [n-1, n-1], res)
-    set_part(sum(multiply(A, F), multiply(B, H)), [0, n], [n-1, m], res)
-    set_part(sum(multiply(C, E), multiply(D, G)), [n, 0], [m, n-1], res)
-    set_part(sum(multiply(C, F), multiply(D, H)), [n, n], [m, m], res)
-    return res
-
-def neg(a):
-    res = get_zero_matrixnn(len(a))
-    for i in range(len(a)):
-        for j in range(len(a[0])):
-            res[i][j] = -a[i][j]
+    res = np.zeros((ln, ln))
+    set_part(multiply(A, E) + multiply(B, G), [0, 0], [n-1, n-1], res)
+    set_part(multiply(A, F) + multiply(B, H), [0, n], [n-1, m], res)
+    set_part(multiply(C, E) + multiply(D, G), [n, 0], [m, n-1], res)
+    set_part(multiply(C, F) + multiply(D, H), [n, n], [m, m], res)
     return res
 
 def strassen(a, b): # 3
@@ -84,20 +51,20 @@ def strassen(a, b): # 3
     G = get_part(b, [n, 0], [m, n-1])
     H = get_part(b, [n, n], [m, m])
 
-    P1 = strassen(A, sum(F, neg(H)))
-    P2 = strassen(sum(A, B), H)
-    P3 = strassen(sum(C, D), E)
-    P4 = strassen(D, sum(G, neg(E)))
-    P5 = strassen(sum(A, D), sum(E, H))
-    P6 = strassen(sum(B, neg(D)), sum(G, H))
-    P7 = strassen(sum(A, neg(C)), sum(E, F))
+    P1 = strassen(A, F-H)
+    P2 = strassen(A+B, H)
+    P3 = strassen(C+D, E)
+    P4 = strassen(D, G-E)
+    P5 = strassen(A+D, E+H)
+    P6 = strassen(B-D, G+H)
+    P7 = strassen(A-C, E+F)
 
-    Q1 = sum(sum(sum(P5, P4), neg(P2)), P6)
-    Q2 = sum(P1, P2)
-    Q3 = sum(P3, P4)
-    Q4 = sum(sum(sum(P1, P5), neg(P3)), neg(P7))
+    Q1 = P5+P4-P2+P6
+    Q2 = P1+P2
+    Q3 = P3+P4
+    Q4 = P1+P5-P3-P7
 
-    res = get_zero_matrixnn(ln)
+    res = np.zeros((ln, ln))
     set_part(Q1, [0, 0], [n-1, n-1], res)
     set_part(Q2, [0, n], [n-1, m], res)
     set_part(Q3, [n, 0], [m, n-1], res)
