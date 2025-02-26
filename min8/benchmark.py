@@ -30,7 +30,7 @@ def get_point():
         A, B = get_2_random_matrixnn(N) 
         time1 = measure(solution.recursive_multiply, [A, B])
         time2 = measure(solution.strassen, [A, B])
-        if time2 > time1 and time1 and time2:
+        if time2 < time1 and time1 and time2:
             return N
         N*=2
 
@@ -46,4 +46,4 @@ def benchmark(algos, args):
 format_table.format_table(["best", "worst"], ["classic", "recursive", "strassen"], benchmark([solution.multiply, solution.recursive_multiply, solution.strassen], 
            [get_2_random_matrixnn(2**random.randint(4, 6)) for _ in range(10)]))
 
-print(f"At point {get_point()} strassen is better than recursive")
+#print(f"At point {get_point()} strassen is better than recursive") strassen is to slow why... it's endless research
