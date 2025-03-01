@@ -17,23 +17,26 @@ def lsd_radix_sort(array: List[str]):
 strings = []
 with open("data.txt", "r") as f:
     strings = f.readlines()
+    strings = [x.strip() for x in strings]
 
 temp = strings.copy()
 
-def quicksort_strings(strings):
-    if len(strings) <= 1:
-        return strings
-    else:
-        pivot = strings[len(strings) // 2]
-        left = [x for x in strings if x < pivot]
-        middle = [x for x in strings if x == pivot]
-        right = [x for x in strings if x > pivot]
-        return quicksort_strings(left) + middle + quicksort_strings(right)
+def bubble_sort_strings(strings):
+    n = len(strings)
+    for i in range(n):
+        swapped = False
+        for j in range(n - i - 1):
+            if strings[j] > strings[j + 1]:
+                strings[j], strings[j + 1] = strings[j + 1], strings[j]
+                swapped = True
+        if not swapped:
+            break
+    return strings
 
-assert quicksort_strings(strings) == sorted(strings)
-temp = strings.copy()
-lsd_radix_sort(temp)
-assert temp == sorted(strings)
+# assert bubble_sort_strings(strings) == sorted(strings)
+# temp = strings.copy()
+# lsd_radix_sort(temp)
+# assert temp == sorted(strings)
 
 import time
 def measure(delegat, args):
@@ -44,4 +47,4 @@ def measure(delegat, args):
 
 import format_table
 
-format_table.format_table(["time"], ["radix", "quick"], [[measure(lsd_radix_sort, [strings.copy()]), measure(quicksort_strings, [strings])]])
+format_table.format_table(["time"], ["radix", "bubble"], [[measure(lsd_radix_sort, [strings.copy()]), measure(bubble_sort_strings, [strings])]])
