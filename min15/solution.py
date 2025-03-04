@@ -4,22 +4,23 @@ class Node:
         self.next = None
 
 def reverse_part(head, left, right):
-    dummy = Node(0)
-    dummy.next = head
-    prev = dummy
+    saved = Node(0)
+    saved.next = head
+    prev = saved
 
-    for _ in range(left-1):
+    for i in range(left-1):
         prev = prev.next
 
     current = prev.next
-    next_node = None
-    for _ in range(right - left + 1):
+    next = None
+    for i in range(right - left + 1):
         temp = current.next
-        current.next = next_node
-        next_node = current
+        current.next = next
+        next = current
         current = temp
 
     prev.next.next = current
-    prev.next = next_node
+    prev.next = next
 
-    return dummy.next
+    return saved.next
+
