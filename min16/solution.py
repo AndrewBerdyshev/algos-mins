@@ -27,6 +27,8 @@ class Operators:
 
 #precedence from https://en.cppreference.com/w/c/language/operator_precedence
 operators = Operators([
+    Operator(symbol='**', precedence=1, operands=1, isltr=False),
+
     Operator(symbol='!', precedence=2, operands=1, isltr=False),
     Operator(symbol='~', precedence=2, operands=1, isltr=False),
     Operator(symbol='*', precedence=3, operands=2, isltr=True),
@@ -57,10 +59,9 @@ def toReversePolishNotation(a):
                 res.append(stack.pop())
             stack.pop()
         elif i in operators:
-            if helper(stack, i):
-                while helper(stack, i):
-                    temp = stack.pop()
-                    res.append(temp)
+            while helper(stack, i):
+                temp = stack.pop()
+                res.append(temp)
             stack.append(i)
         else:
             res.append(i)
@@ -86,4 +87,13 @@ test("cond1 && cond2 || cond3", "cond1 cond2 && cond3 ||")
 test("~ x * 2 + y >> 1 & mask", "x ~ 2 * y + 1 >> mask &")
 test("! ( ( x * 2 ) >> ( y + z || mask ) )", "x 2 * y z + mask || >> !")
 test("( ( a & ( b | ( c ^ d ) ) ) + ( e << ( f % 5 ) ) )", "a b c d ^ | & e f 5 % << +")
+
+test("2 ** 3 ** 2", "2 3 2 ** **")
+test("a ** b * c + d", "a b ** c * d +")
+test("x + y ** z * 2", "x y z ** 2 * +")
+test("( a + b ) ** ( c % d )", "a b + c d % **")
+test("! x ** 3", "x 3 ** !")
+test("a ** b ** c ** d", "a b c d ** ** **")
+test("( x ** y ) ** z", "x y ** z **")
+
 print("All tests passed!")
