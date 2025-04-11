@@ -1,14 +1,18 @@
 from typing import List
 
 def counting_sort(A: List[str], index: int):
-    C = [[] for _ in range(256)]
-    for a in A:
-        C[ord(a[index])].append(a)
-    j = 0
-    for i in range(256):
-        for c in C[i]:
-            A[j] = c
-            j+=1
+    counts = [0] * 256
+    for s in A:
+        counts[ord(s[index])] += 1
+    prefix_sums = [0] * 256
+    for i in range(1, 256):
+        prefix_sums[i] = prefix_sums[i-1] + counts[i-1]
+    temp = [''] * len(A)
+    for s in A:
+        char_code = ord(s[index])
+        temp[prefix_sums[char_code]] = s
+        prefix_sums[char_code] += 1
+    A[:] = temp
 
 def lsd_radix_sort(array: List[str]):
     for i in range(len(array[0]) - 1, -1, -1):
