@@ -15,7 +15,7 @@ class TreeNodeMy:
         self.checkBalance()
     
     def toOrigin(self):
-        return TreeNode(self.balance, 
+        return TreeNode(self.val, 
                         self.left.toOrigin() if self.left else None,
                         self.right.toOrigin() if self.right else None)
     def checkBalance(self):
@@ -55,11 +55,19 @@ class TreeNodeMy:
             elif self.left.balance == 1: # big right
                 self.right = self.__smallLeft(self.left)
                 return self.__smallRight(self)
-
+        elif self.balance > 2:
+            self.right = self.right.fix()
+            self.checkBalance()
+            return self.fix()
+        elif self.balance < 2:
+            self.left = self.left.fix()
+            self.checkBalance()
+            return self.fix()
         
 class Solution:
     def balanceBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         temp = TreeNodeMy(root)
+        return temp.toOrigin()
 
 # tree = TreeNode(2, TreeNode(1), TreeNode(4, TreeNode(3), TreeNode(5, None, TreeNode(6))))
 # tree2 = TreeNodeMy(tree)
@@ -73,4 +81,5 @@ class Solution:
 tree = TreeNode(1, None, TreeNode(2, None, TreeNode(3, None, TreeNode(4))))
 tree2 = TreeNodeMy(tree)
 tree2 = tree2.fix()
+tree = tree2.toOrigin()
 print("lol")
