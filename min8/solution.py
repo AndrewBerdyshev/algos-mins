@@ -4,7 +4,12 @@ def get_zero_matrixnn(n):
     return  [[0 for _ in range(n)] for __ in range(n)]
 
 def multiply(a, b):
-    return np.matmul(a, b)
+    result = np.zeros((a.shape[0], b.shape[1]))
+    for i in range(a.shape[0]):
+        for j in range(b.shape[1]):
+            for k in range(a.shape[1]):
+                result[i, j] += a[i, k] * b[k, j]
+    return result
 
 def get_part(matrix, start, end):
     return matrix[start[0]:end[0]+1, start[1]:end[1]+1]
@@ -14,8 +19,8 @@ def set_part(part, start, end, matrix):
 
 def recursive_multiply(a, b): # 2
     ln = len(a)
-    if ln == 2:
-        return multiply(a, b)
+    if ln <= 32:
+        return np.matmul(a, b)
     n = ln // 2
     m = ln - 1
 
@@ -29,16 +34,16 @@ def recursive_multiply(a, b): # 2
     H = get_part(b, [n, n], [m, m])
 
     res = np.zeros((ln, ln))
-    set_part(multiply(A, E) + multiply(B, G), [0, 0], [n-1, n-1], res)
-    set_part(multiply(A, F) + multiply(B, H), [0, n], [n-1, m], res)
-    set_part(multiply(C, E) + multiply(D, G), [n, 0], [m, n-1], res)
-    set_part(multiply(C, F) + multiply(D, H), [n, n], [m, m], res)
+    set_part(np.matmul(A, E) + np.matmul(B, G), [0, 0], [n-1, n-1], res)
+    set_part(np.matmul(A, F) + np.matmul(B, H), [0, n], [n-1, m], res)
+    set_part(np.matmul(C, E) + np.matmul(D, G), [n, 0], [m, n-1], res)
+    set_part(np.matmul(C, F) + np.matmul(D, H), [n, n], [m, m], res)
     return res
 
 def strassen(a, b): # 3
     ln = len(a)
-    if ln == 2:
-        return multiply(a, b)
+    if ln <= 64:
+        return np.matmul(a, b)
     n = ln // 2
     m = ln - 1
 
